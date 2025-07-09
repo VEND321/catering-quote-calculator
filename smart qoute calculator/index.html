@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Catering Quote Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #F5F5F0;
+            --gold: #D4AF37;
+            --dark-green: #1A3A2F;
+            --light-green: #2D5E4F;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cream);
+            color: var(--dark-green);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--light-green) 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            transition: var(--transition);
+        }
+
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .calculator-header h2 {
+            font-size: 1.5rem;
+            color: var(--dark-green);
+        }
+
+        .toggle-icon {
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .calculator-content {
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.3s ease;
+        }
+
+        .package-group {
+            margin-bottom: 25px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .package-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .package-label {
+            flex: 1 1 100%;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        @media (min-width: 768px) {
+            .package-label {
+                flex: 0 0 200px;
+                margin-bottom: 0;
+            }
+        }
+
+        .package-select, .quantity-input {
+            flex: 1 1 calc(50% - 15px);
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: white;
+        }
+
+        .package-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A3A2F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 1rem;
+        }
+
+        .package-select:focus, .quantity-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Total Section */
+        .total-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .total-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark-green);
+        }
+
+        .total-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin: 10px 0;
+        }
+
+        /* Button */
+        .whatsapp-button {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .whatsapp-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+            background-color: #20bd5a;
+        }
+
+        .whatsapp-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Demo Notice */
+        .demo-notice {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 40px;
+            font-style: italic;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .package-select, .quantity-input {
+                flex: 1 1 100%;
+            }
+        }
+
+        /* Collapsed state */
+        .calculator.collapsed .calculator-content {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .calculator.collapsed .toggle-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <h1>Deluxe Catering Co.</h1>
+            <p>Instant Catering Quote – No More Guessing Prices</p>
+        </section>
+
+        <section class="calculator" id="calculator">
+            <div class="calculator-header" onclick="toggleCalculator()">
+                <h2>Build Your Package</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="calculator-content">
+                <div class="package-group" style="animation-delay: 0.1s">
+                    <label class="package-label">Small Chops Package</label>
+                    <div class="package-row">
+                        <select class="package-select" id="small-chops" onchange="calculateTotal()">
+                            <option value="0">Select an option</option>
+                            <option value="2500">Basic Set (₦2,500 per person)</option>
+                            <option value="3500">Standard Set (₦3,500 per person)</option>
+                            <option value="5000">Premium Set (₦5,000 per person)</option>
+                        </select>
+                        <input type="number" class="quantity-input" id="small-chops-qty" min="0" placeholder="Quantity" onchange="calculateTotal()">
+                    </div>
+                </div>
+
+                <div class="package-group" style="animation-delay: 0.2s">
+                    <label class="package-label">Full Meal Package</label>
+                    <div class="package-row">
+                        <select class="package-select" id="full-meal" onchange="calculateTotal()">
+                            <option value="0">Select an option</option>
+                            <option value="5000">Basic Meal (₦5,000 per person)</option>
+                            <option value="7500">Standard Meal (₦7,500 per person)</option>
+                            <option value="10000">Premium Meal (₦10,000 per person)</option>
+                        </select>
+                        <input type="number" class="quantity-input" id="full-meal-qty" min="0" placeholder="Quantity" onchange="calculateTotal()">
+                    </div>
+                </div>
+
+                <div class="package-group" style="animation-delay: 0.3s">
+                    <label class="package-label">Drinks Package</label>
+                    <div class="package-row">
+                        <select class="package-select" id="drinks" onchange="calculateTotal()">
+                            <option value="0">Select an option</option>
+                            <option value="1500">Soft Drinks Only (₦1,500 per person)</option>
+                            <option value="3000">Standard Bar (₦3,000 per person)</option>
+                            <option value="5000">Premium Bar (₦5,000 per person)</option>
+                        </select>
+                        <input type="number" class="quantity-input" id="drinks-qty" min="0" placeholder="Quantity" onchange="calculateTotal()">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="total-section">
+            <h2>Your Total Estimate</h2>
+            <div class="total-price" id="total-price">₦0</div>
+            <p>Prices are estimates. Final quote may vary based on specific requirements.</p>
+            <button class="whatsapp-button" onclick="sendWhatsApp()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-8.983-7.429h-.004a7.644 7.644 0 00-5.159 2.031 7.577 7.577 0 00-2.256 5.407 7.548 7.548 0 002.945 5.93l.312.223-.994 2.92 2.996-.788.46.326a7.574 7.574 0 008.638-1.217 7.63 7.63 0 001.58-2.38 7.55 7.55 0 00-1.028-7.309 7.653 7.653 0 00-6.152-2.717z" fill="currentColor"/>
+                </svg>
+                Order Now via WhatsApp
+            </button>
+        </section>
+
+        <div class="demo-notice">
+            <p><strong>This is a demo only. Your custom version will be fully tailored to your brand.</strong></p>
+        </div>
+    </div>
+
+    <script>
+        // Calculate total price
+        function calculateTotal() {
+            const smallChopsPrice = parseFloat(document.getElementById('small-chops').value) || 0;
+            const smallChopsQty = parseInt(document.getElementById('small-chops-qty').value) || 0;
+            
+            const fullMealPrice = parseFloat(document.getElementById('full-meal').value) || 0;
+            const fullMealQty = parseInt(document.getElementById('full-meal-qty').value) || 0;
+            
+            const drinksPrice = parseFloat(document.getElementById('drinks').value) || 0;
+            const drinksQty = parseInt(document.getElementById('drinks-qty').value) || 0;
+            
+            const total = (smallChopsPrice * smallChopsQty) + 
+                          (fullMealPrice * fullMealQty) + 
+                          (drinksPrice * drinksQty);
+            
+            document.getElementById('total-price').textContent = '₦' + total.toLocaleString();
+        }
+
+        // Send WhatsApp message
+        function sendWhatsApp() {
+            const smallChopsSelect = document.getElementById('small-chops');
+            const smallChopsText = smallChopsSelect.options[smallChopsSelect.selectedIndex].text;
+            const smallChopsQty = document.getElementById('small-chops-qty').value || 0;
+            
+            const fullMealSelect = document.getElementById('full-meal');
+            const fullMealText = fullMealSelect.options[fullMealSelect.selectedIndex].text;
+            const fullMealQty = document.getElementById('full-meal-qty').value || 0;
+            
+            const drinksSelect = document.getElementById('drinks');
+            const drinksText = drinksSelect.options[drinksSelect.selectedIndex].text;
+            const drinksQty = document.getElementById('drinks-qty').value || 0;
+            
+            const totalPrice = document.getElementById('total-price').textContent;
+            
+            let message = `Hello Deluxe Catering Co., I'd like to place an order:\n\n`;
+            
+            if (smallChopsQty > 0) {
+                message += `- ${smallChopsText} x ${smallChopsQty}\n`;
+            }
+            
+            if (fullMealQty > 0) {
+                message += `- ${fullMealText} x ${fullMealQty}\n`;
+            }
+            
+            if (drinksQty > 0) {
+                message += `- ${drinksText} x ${drinksQty}\n`;
+            }
+            
+            message += `\nTotal: ${totalPrice}\n\nPlease let me know about availability and next steps.`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+        }
+
+        // Toggle calculator collapse on mobile
+        function toggleCalculator() {
+            if (window.innerWidth <= 768) {
+                const calculator = document.getElementById('calculator');
+                calculator.classList.toggle('collapsed');
+            }
+        }
+
+        // Initialize calculator as collapsed on mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('calculator').classList.add('collapsed');
+            }
+        });
+    </script>
+</body>
+</html>
