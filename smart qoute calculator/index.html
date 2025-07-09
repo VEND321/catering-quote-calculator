@@ -3,522 +3,371 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Catering Quote Calculator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Premium Event Pricing Calculator | YourBrand</title>
     <style>
+        /* ===== MODERN UI/UX ===== */
         :root {
-            --cream: #F8F5F0;
-            --gold: #D4AF37;
-            --dark-green: #1A3A2F;
-            --light-green: #2D5E4F;
-            --accent: #E8C07D;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --border-radius: 12px;
+            --primary: #6C63FF;  /* Premium purple */
+            --secondary: #FF6584; /* Accent pink */
+            --dark: #2F2E41;
+            --light: #F8F9FA;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--cream);
-            color: var(--dark-green);
-            line-height: 1.6;
-            padding-bottom: 40px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
+            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 50px 20px;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, var(--dark-green) 0%, var(--light-green) 100%);
-            color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            animation: fadeIn 0.8s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="rgba(255,255,255,0.05)" d="M30,10L50,30L70,10L90,30L70,50L90,70L70,90L50,70L30,90L10,70L30,50L10,30L30,10Z"/></svg>');
-            opacity: 0.1;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Calculator Section */
-        .calculator {
+        .calculator-container {
+            width: 100%;
+            max-width: 800px;
             background: white;
-            border-radius: var(--border-radius);
-            padding: 0;
+            border-radius: 20px;
             box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            transition: var(--transition);
             overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .calculator-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 25px 30px;
-            cursor: pointer;
-            background-color: var(--dark-green);
+            background: var(--primary);
             color: white;
-        }
-
-        .calculator-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .toggle-icon {
-            font-size: 1.2rem;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-        }
-
-        .calculator-content {
-            padding: 30px;
-            overflow: hidden;
-            transition: max-height 0.5s ease, opacity 0.3s ease, padding 0.3s ease;
-        }
-
-        .package-group {
-            margin-bottom: 25px;
-            animation: slideUp 0.5s ease-out;
-        }
-
-        .package-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 12px;
-            color: var(--dark-green);
-            font-size: 1.1rem;
-        }
-
-        .package-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .package-select, .quantity-input {
-            flex: 1 1 100%;
-            padding: 14px 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: var(--transition);
-            background-color: white;
-            color: var(--dark-green);
-        }
-
-        @media (min-width: 768px) {
-            .package-select, .quantity-input {
-                flex: 1 1 calc(50% - 15px);
-            }
-        }
-
-        .package-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A3A2F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 18px center;
-            background-size: 1rem;
-        }
-
-        .package-select:focus, .quantity-input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-        }
-
-        /* Calculate Button */
-        .calculate-btn {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            background-color: var(--gold);
-            color: var(--dark-green);
-            border: none;
-            border-radius: 8px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 20px;
+            padding: 25px;
             text-align: center;
         }
 
-        .calculate-btn:hover {
-            background-color: #e0b63a;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-        }
-
-        .calculate-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Total Section */
-        .total-section {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            text-align: center;
-            animation: fadeIn 0.8s ease-out 0.2s both;
-            border-top: 4px solid var(--gold);
-        }
-
-        .total-section h2 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--dark-green);
-            font-weight: 600;
-        }
-
-        .total-price {
-            font-size: 2.8rem;
+        .calculator-header h1 {
             font-weight: 700;
-            color: var(--gold);
-            margin: 20px 0;
-            transition: var(--transition);
+            margin-bottom: 5px;
+            font-size: 28px;
         }
 
-        .total-note {
-            font-size: 0.9rem;
-            color: #666;
+        .calculator-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .calculator-body {
+            padding: 30px;
+        }
+
+        .input-group {
             margin-bottom: 25px;
         }
 
-        /* Button */
-        .whatsapp-button {
-            display: inline-block;
-            background-color: #25D366;
-            color: white;
-            padding: 18px 30px;
-            border-radius: 8px;
-            text-decoration: none;
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 600;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-            border: none;
-            cursor: pointer;
+            color: var(--dark);
+            font-size: 15px;
+        }
+
+        .input-control {
             width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
         }
 
-        .whatsapp-button:hover {
+        .input-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .slider-container {
+            margin-top: 10px;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            margin-bottom: 15px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: var(--secondary);
+        }
+
+        .addons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .addon-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .addon-card:hover {
+            border-color: var(--primary);
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-            background-color: #20bd5a;
         }
 
-        .whatsapp-button:active {
-            transform: translateY(1px);
+        .addon-card.selected {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.05);
         }
 
-        /* Demo Notice */
-        .demo-notice {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
+        .addon-card h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .addon-card p {
+            font-size: 14px;
             color: #666;
-            margin-top: 40px;
-            font-style: italic;
-            border-top: 1px solid #eee;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .price-display {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.2); }
+            70% { box-shadow: 0 0 0 15px rgba(108, 99, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0); }
         }
 
-        /* Responsive Adjustments */
+        .price-display h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .price-display .total {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .price-display .breakdown {
+            font-size: 14px;
+            color: #666;
+            margin-top: 15px;
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 101, 132, 0.3);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
+            .addons-grid {
+                grid-template-columns: 1fr;
             }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .calculator-header {
-                padding: 20px;
-            }
-            
-            .calculator-content {
-                padding: 20px;
-            }
-        }
-
-        /* Collapsed state */
-        .calculator.collapsed .calculator-content {
-            max-height: 0;
-            opacity: 0;
-            padding: 0 30px;
-        }
-
-        .calculator.collapsed .toggle-icon {
-            transform: rotate(180deg);
-        }
-
-        /* Loading state */
-        .loading .total-price {
-            animation: pulse 1.5s infinite;
-            color: #ccc;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Deluxe Catering Co.</h1>
-                <p>Instant Catering Quote – No More Guessing Prices</p>
-            </div>
-        </section>
+    <div class="calculator-container">
+        <div class="calculator-header">
+            <h1>Event Pricing Calculator</h1>
+            <p>Get an instant quote tailored to your event</p>
+        </div>
 
-        <section class="calculator" id="calculator">
-            <div class="calculator-header" onclick="toggleCalculator()">
-                <h2>Build Your Package</h2>
-                <span class="toggle-icon">▼</span>
+        <div class="calculator-body">
+            <div class="input-group">
+                <label for="event-type">Event Type</label>
+                <select id="event-type" class="input-control">
+                    <option value="wedding">Wedding</option>
+                    <option value="corporate">Corporate</option>
+                    <option value="birthday">Birthday</option>
+                    <option value="other">Other</option>
+                </select>
             </div>
-            <div class="calculator-content">
-                <div class="package-group" style="animation-delay: 0.1s">
-                    <label class="package-label">Small Chops Package</label>
-                    <div class="package-row">
-                        <select class="package-select" id="small-chops">
-                            <option value="0">Select an option</option>
-                            <option value="2500">Basic Set (₦2,500 per person)</option>
-                            <option value="3500">Standard Set (₦3,500 per person)</option>
-                            <option value="5000">Premium Set (₦5,000 per person)</option>
-                        </select>
-                        <input type="number" class="quantity-input" id="small-chops-qty" min="0" placeholder="Quantity">
+
+            <div class="input-group">
+                <label for="guests">Number of Guests: <span id="guest-value">100</span></label>
+                <input type="range" id="guests" class="slider" min="20" max="500" value="100" step="10">
+            </div>
+
+            <div class="input-group">
+                <label>Add-On Services</label>
+                <div class="addons-grid">
+                    <div class="addon-card" data-addon="photography">
+                        <h3>Professional Photography</h3>
+                        <p>+₦150,000</p>
+                    </div>
+                    <div class="addon-card" data-addon="dj">
+                        <h3>DJ Services</h3>
+                        <p>+₦80,000</p>
+                    </div>
+                    <div class="addon-card" data-addon="decor">
+                        <h3>Premium Decor</h3>
+                        <p>+₦200,000</p>
+                    </div>
+                    <div class="addon-card" data-addon="bar">
+                        <h3>Open Bar</h3>
+                        <p>+₦120,000</p>
                     </div>
                 </div>
-
-                <div class="package-group" style="animation-delay: 0.2s">
-                    <label class="package-label">Full Meal Package</label>
-                    <div class="package-row">
-                        <select class="package-select" id="full-meal">
-                            <option value="0">Select an option</option>
-                            <option value="5000">Basic Meal (₦5,000 per person)</option>
-                            <option value="7500">Standard Meal (₦7,500 per person)</option>
-                            <option value="10000">Premium Meal (₦10,000 per person)</option>
-                        </select>
-                        <input type="number" class="quantity-input" id="full-meal-qty" min="0" placeholder="Quantity">
-                    </div>
-                </div>
-
-                <div class="package-group" style="animation-delay: 0.3s">
-                    <label class="package-label">Drinks Package</label>
-                    <div class="package-row">
-                        <select class="package-select" id="drinks">
-                            <option value="0">Select an option</option>
-                            <option value="1500">Soft Drinks Only (₦1,500 per person)</option>
-                            <option value="3000">Standard Bar (₦3,000 per person)</option>
-                            <option value="5000">Premium Bar (₦5,000 per person)</option>
-                        </select>
-                        <input type="number" class="quantity-input" id="drinks-qty" min="0" placeholder="Quantity">
-                    </div>
-                </div>
-
-                <button class="calculate-btn" onclick="calculateTotal()">Calculate My Quote</button>
             </div>
-        </section>
 
-        <section class="total-section" id="total-section">
-            <h2>Your Total Estimate</h2>
-            <div class="total-price" id="total-price">₦0</div>
-            <p class="total-note">Prices are estimates. Final quote may vary based on specific requirements.</p>
-            <button class="whatsapp-button" onclick="sendWhatsApp()" id="whatsapp-btn" disabled>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-8.983-7.429h-.004a7.644 7.644 0 00-5.159 2.031 7.577 7.577 0 00-2.256 5.407 7.548 7.548 0 002.945 5.93l.312.223-.994 2.92 2.996-.788.46.326a7.574 7.574 0 008.638-1.217 7.63 7.63 0 001.58-2.38 7.55 7.55 0 00-1.028-7.309 7.653 7.653 0 00-6.152-2.717z" fill="currentColor"/>
-                </svg>
-                Order Now via WhatsApp
-            </button>
-        </section>
+            <div class="price-display">
+                <h2>Estimated Total</h2>
+                <div class="total" id="total-price">₦850,000</div>
+                <p class="breakdown"><span id="base-price">₦750,000</span> base + <span id="addons-price">₦100,000</span> add-ons</p>
+            </div>
 
-        <div class="demo-notice">
-            <p><strong>This is a demo only. Your custom version will be fully tailored to your brand.</strong></p>
+            <button class="cta-button">Book Now & Save 10%</button>
         </div>
     </div>
 
     <script>
-        // Calculate total price
-        function calculateTotal() {
-            // Show loading state
-            const totalSection = document.getElementById('total-section');
-            totalSection.classList.add('loading');
-            document.getElementById('total-price').textContent = 'Calculating...';
-            document.getElementById('whatsapp-btn').disabled = true;
-
-            // Simulate calculation delay for better UX
-            setTimeout(() => {
-                const smallChopsPrice = parseFloat(document.getElementById('small-chops').value) || 0;
-                const smallChopsQty = parseInt(document.getElementById('small-chops-qty').value) || 0;
-                
-                const fullMealPrice = parseFloat(document.getElementById('full-meal').value) || 0;
-                const fullMealQty = parseInt(document.getElementById('full-meal-qty').value) || 0;
-                
-                const drinksPrice = parseFloat(document.getElementById('drinks').value) || 0;
-                const drinksQty = parseInt(document.getElementById('drinks-qty').value) || 0;
-                
-                const total = (smallChopsPrice * smallChopsQty) + 
-                            (fullMealPrice * fullMealQty) + 
-                            (drinksPrice * drinksQty);
-                
-                // Format with thousand separators
-                const formattedTotal = new Intl.NumberFormat('en-NG', {
-                    style: 'currency',
-                    currency: 'NGN',
-                    minimumFractionDigits: 0
-                }).format(total).replace('NGN', '₦');
-                
-                document.getElementById('total-price').textContent = formattedTotal;
-                totalSection.classList.remove('loading');
-                
-                // Enable WhatsApp button if total > 0
-                if (total > 0) {
-                    document.getElementById('whatsapp-btn').disabled = false;
-                }
-            }, 800);
-        }
-
-        // Send WhatsApp message
-        function sendWhatsApp() {
-            const smallChopsSelect = document.getElementById('small-chops');
-            const smallChopsText = smallChopsSelect.options[smallChopsSelect.selectedIndex].text;
-            const smallChopsQty = document.getElementById('small-chops-qty').value || 0;
-            
-            const fullMealSelect = document.getElementById('full-meal');
-            const fullMealText = fullMealSelect.options[fullMealSelect.selectedIndex].text;
-            const fullMealQty = document.getElementById('full-meal-qty').value || 0;
-            
-            const drinksSelect = document.getElementById('drinks');
-            const drinksText = drinksSelect.options[drinksSelect.selectedIndex].text;
-            const drinksQty = document.getElementById('drinks-qty').value || 0;
-            
-            const totalPrice = document.getElementById('total-price').textContent;
-            
-            let message = `Hello Deluxe Catering Co., I'd like to place an order:\n\n`;
-            
-            if (smallChopsQty > 0) {
-                message += `- ${smallChopsText} x ${smallChopsQty}\n`;
-            }
-            
-            if (fullMealQty > 0) {
-                message += `- ${fullMealText} x ${fullMealQty}\n`;
-            }
-            
-            if (drinksQty > 0) {
-                message += `- ${drinksText} x ${drinksQty}\n`;
-            }
-            
-            message += `\nTotal: ${totalPrice}\n\nPlease let me know about availability and next steps.`;
-            
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/2348188726102?text=${encodedMessage}`, '_blank');
-        }
-
-        // Toggle calculator collapse on mobile
-        function toggleCalculator() {
-            if (window.innerWidth <= 768) {
-                const calculator = document.getElementById('calculator');
-                calculator.classList.toggle('collapsed');
-            }
-        }
-
-        // Initialize calculator as collapsed on mobile
+        // ===== DYNAMIC PRICING ENGINE =====
         document.addEventListener('DOMContentLoaded', function() {
-            if (window.innerWidth <= 768) {
-                document.getElementById('calculator').classList.add('collapsed');
-            }
-            
-            // Add input validation
-            const quantityInputs = document.querySelectorAll('.quantity-input');
-            quantityInputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    if (this.value < 0) this.value = 0;
+            // DOM Elements
+            const guestSlider = document.getElementById('guests');
+            const guestValue = document.getElementById('guest-value');
+            const eventType = document.getElementById('event-type');
+            const addonCards = document.querySelectorAll('.addon-card');
+            const totalPrice = document.getElementById('total-price');
+            const basePrice = document.getElementById('base-price');
+            const addonsPrice = document.getElementById('addons-price');
+
+            // Pricing Data
+            const baseRates = {
+                wedding: 7500,
+                corporate: 8000,
+                birthday: 6000,
+                other: 6500
+            };
+
+            const addonPrices = {
+                photography: 150000,
+                dj: 80000,
+                decor: 200000,
+                bar: 120000
+            };
+
+            // Selected Addons
+            let selectedAddons = [];
+
+            // Update Guest Count Display
+            guestSlider.addEventListener('input', function() {
+                guestValue.textContent = this.value;
+                calculatePrice();
+            });
+
+            // Event Type Change
+            eventType.addEventListener('change', calculatePrice);
+
+            // Addon Selection
+            addonCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    const addon = this.dataset.addon;
+                    
+                    if (this.classList.contains('selected')) {
+                        selectedAddons.push(addon);
+                    } else {
+                        selectedAddons = selectedAddons.filter(item => item !== addon);
+                    }
+                    
+                    calculatePrice();
                 });
             });
+
+            // Calculate Total Price
+            function calculatePrice() {
+                const guests = parseInt(guestSlider.value);
+                const event = eventType.value;
+                const baseCost = guests * baseRates[event];
+                
+                // Calculate addons
+                let addonsCost = 0;
+                selectedAddons.forEach(addon => {
+                    addonsCost += addonPrices[addon];
+                });
+
+                // Apply volume discount
+                let discount = 0;
+                if (guests >= 100) discount = baseCost * 0.05;
+                if (guests >= 200) discount = baseCost * 0.1;
+
+                const finalPrice = baseCost + addonsCost - discount;
+
+                // Update UI
+                basePrice.textContent = `₦${baseCost.toLocaleString()}`;
+                addonsPrice.textContent = `₦${addonsCost.toLocaleString()}`;
+                totalPrice.textContent = `₦${finalPrice.toLocaleString()}`;
+
+                // Pulse animation on price change
+                totalPrice.style.animation = 'none';
+                void totalPrice.offsetWidth; // Trigger reflow
+                totalPrice.style.animation = 'pulse 1s';
+            }
+
+            // Initial calculation
+            calculatePrice();
         });
     </script>
 </body>
