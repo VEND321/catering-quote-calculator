@@ -4,232 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite Events Pro | Premium Pricing Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ===== GLOBAL STYLES ===== */
         :root {
-            --primary: #6C63FF;
-            --primary-light: #8A82FF;
-            --secondary: #FF6584;
+            --primary: #5A189A;
+            --primary-light: #7B2CBF;
+            --secondary: #FEC260;
             --dark: #2F2E41;
-            --darker: #1E1E2C;
-            --light: #F8F9FA;
-            --lighter: #FFFFFF;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --light: #F7F7F7;
             --radius: 12px;
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            background: var(--light);
             color: var(--dark);
+            line-height: 1.6;
         }
 
-        /* ===== MAIN CONTAINER ===== */
-        .calculator-container {
-            width: 100%;
-            max-width: 1000px;
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            position: relative;
+        .container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 20px;
         }
 
-        /* ===== DEMO WATERMARK ===== */
-        .demo-banner {
-            position: absolute;
-            top: 20px;
-            right: -30px;
-            background: var(--secondary);
-            color: white;
-            padding: 8px 30px;
-            transform: rotate(30deg);
-            font-weight: bold;
-            font-size: 12px;
-            box-shadow: 0 2px 10px rgba(255, 101, 132, 0.3);
-            z-index: 2;
-        }
-
-        /* ===== BRANDING HEADER ===== */
+        /* Brand Header */
         .brand-header {
             display: flex;
             align-items: center;
-            padding: 25px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
-        .brand-logo {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-
-        .brand-logo img {
-            width: 80%;
-            height: 80%;
-            object-fit: contain;
-        }
-
-        .brand-name h2 {
-            font-size: 24px;
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
-
-        .brand-name p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        /* ===== MAIN GRID LAYOUT ===== */
-        .calculator-grid {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-        }
-
-        @media (max-width: 768px) {
-            .calculator-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== TESTIMONIAL SIDEBAR ===== */
-        .testimonial-sidebar {
-            background: #f9f9f9;
-            padding: 30px;
-            border-right: 1px solid #eee;
-        }
-
-        .testimonial-sidebar h3 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: var(--dark);
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .testimonial-sidebar h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: var(--primary);
-        }
-
-        .testimonial-card {
-            background: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .testimonial-card p {
-            font-style: italic;
-            color: #555;
-            margin-bottom: 15px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .client-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .client-avatar {
-            width: 40px;
-            height: 40px;
+        .logo-placeholder {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: var(--primary);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
             font-weight: bold;
-            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .client-name {
-            font-weight: 600;
+        .brand-name h1 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .brand-name p {
+            color: #666;
             font-size: 14px;
         }
 
-        .client-title {
-            font-size: 12px;
-            color: #777;
+        /* Calculator Grid */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
         }
 
-        /* ===== AI SPOTLIGHT ===== */
-        .ai-spotlight {
-            background: var(--darker);
-            color: white;
-            padding: 20px 15px 15px;
-            border-radius: var(--radius);
-            margin-top: 25px;
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.1);
+        @media (max-width: 992px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .ai-spotlight::before {
-            content: "✨ AI-Powered Insight";
-            position: absolute;
-            top: -10px;
-            left: 15px;
-            background: var(--secondary);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .ai-spotlight p {
-            font-size: 13px;
-            margin-top: 5px;
-            opacity: 0.9;
-            line-height: 1.5;
-        }
-
-        /* ===== CALCULATOR BODY ===== */
+        /* Calculator Body - FULL VERSION */
         .calculator-body {
+            background: white;
+            border-radius: var(--radius);
             padding: 30px;
-            position: relative;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
 
-        .calculator-body h3 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: var(--dark);
+        .calculator-body h2 {
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-size: 22px;
         }
 
-        /* Input Groups */
+        /* Input Groups - UNLOCKED */
         .input-group {
             margin-bottom: 25px;
         }
@@ -237,66 +104,47 @@
         .input-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
+            font-weight: 500;
             font-size: 15px;
         }
 
         .input-control {
             width: 100%;
             padding: 15px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #eee;
             border-radius: var(--radius);
             font-size: 16px;
             transition: all 0.3s;
-            background: white;
         }
 
-        .input-control:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
-        }
-
-        /* Slider Styles */
+        /* Slider - FULL RANGE */
         .slider-container {
-            margin-top: 10px;
+            position: relative;
+            margin-top: 15px;
         }
 
         .slider {
-            -webkit-appearance: none;
             width: 100%;
             height: 8px;
+            -webkit-appearance: none;
+            background: #eee;
             border-radius: 5px;
-            background: #e0e0e0;
             outline: none;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-
-        .slider:hover {
-            background: #d0d0d0;
+            margin: 15px 0;
         }
 
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
             width: 22px;
             height: 22px;
             border-radius: 50%;
             background: var(--primary);
             cursor: pointer;
-            transition: all 0.2s;
             border: 3px solid white;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        .slider::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-            background: var(--secondary);
-        }
-
-        /* Addons Grid */
+        /* Addons Grid - ALL ENABLED */
         .addons-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -305,24 +153,17 @@
         }
 
         .addon-card {
-            border: 2px solid #e0e0e0;
+            border: 2px solid #eee;
             border-radius: var(--radius);
             padding: 15px;
             cursor: pointer;
             transition: all 0.3s;
-            background: white;
-        }
-
-        .addon-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.1);
+            position: relative;
         }
 
         .addon-card.selected {
             border-color: var(--primary);
-            background: rgba(108, 99, 255, 0.05);
-            position: relative;
+            background: rgba(90, 24, 154, 0.03);
         }
 
         .addon-card.selected::after {
@@ -342,67 +183,13 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        .addon-card h3 {
-            font-size: 16px;
-            margin-bottom: 5px;
-            color: var(--dark);
-        }
-
-        .addon-card p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* Disabled State */
-        .disabled {
-            opacity: 0.6;
-            pointer-events: none;
-            position: relative;
-        }
-
-        .disabled::after {
-            content: "Upgrade to unlock";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--secondary);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
         /* Price Display */
         .price-display {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: white;
             border-radius: var(--radius);
             padding: 25px;
             margin-top: 30px;
-            text-align: center;
-            border: 1px solid rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .price-display::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: var(--primary);
-        }
-
-        .price-display h2 {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #666;
-            margin-bottom: 5px;
+            border-left: 4px solid var(--primary);
         }
 
         .price-display .total {
@@ -410,164 +197,43 @@
             font-weight: 700;
             color: var(--primary);
             margin: 10px 0;
-            position: relative;
-            display: inline-block;
         }
 
-        .price-display .total::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 3px;
-        }
-
-        .price-display .breakdown {
-            font-size: 14px;
-            color: #666;
-            margin-top: 15px;
-        }
-
-        /* CTA Button */
-        .cta-button {
-            width: 100%;
-            padding: 18px;
-            background: var(--primary);
-            color: white;
+        /* PDF Export Button */
+        .pdf-export {
+            background: var(--secondary);
+            color: #000;
             border: none;
+            padding: 12px 20px;
             border-radius: var(--radius);
-            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 25px;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-button::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: all 0.5s;
-        }
-
-        .cta-button:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 101, 132, 0.3);
-        }
-
-        .cta-button:hover::after {
-            left: 100%;
-        }
-
-        /* Demo Limit Message */
-        .demo-limit-message {
-            background: #FFF8E6;
-            padding: 15px;
-            border-radius: var(--radius);
-            margin-top: 20px;
-            border-left: 4px solid var(--secondary);
-            display: flex;
+            margin-top: 15px;
+            display: inline-flex;
             align-items: center;
+            gap: 8px;
         }
 
-        .demo-limit-message .icon {
-            margin-right: 15px;
-            font-size: 24px;
-            color: var(--secondary);
-            flex-shrink: 0;
+        /* Testimonials Sidebar */
+        .testimonial-sidebar {
+            background: #f9f9f9;
+            border-radius: var(--radius);
+            padding: 30px;
         }
 
-        .demo-limit-message h4 {
-            margin-bottom: 5px;
-            color: var(--dark);
-            font-size: 15px;
-        }
-
-        .demo-limit-message p {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.4;
-        }
-
-        /* Upsell Footer */
-        .upsell-footer {
-            background: var(--darker);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .upsell-footer h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .upsell-footer p {
-            opacity: 0.8;
-            font-size: 14px;
+        .testimonial-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
             margin-bottom: 20px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.5;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        .upsell-button {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 14px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .upsell-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 101, 132, 0.4);
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.2); }
-            70% { box-shadow: 0 0 0 15px rgba(108, 99, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0); }
-        }
-
-        /* Responsive Adjustments */
+        /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .brand-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .brand-logo {
-                margin-right: 0;
-                margin-bottom: 15px;
+            .container {
+                margin-top: 30px;
+                padding: 15px;
             }
             
             .addons-grid {
@@ -581,69 +247,20 @@
     </style>
 </head>
 <body>
-    <div class="calculator-container">
-        <!-- DEMO WATERMARK -->
-        <div class="demo-banner">DEMO MODE</div>
-        
-        <!-- BRANDING HEADER -->
+    <div class="container">
+        <!-- Brand Header -->
         <div class="brand-header">
-            <div class="brand-logo">
-                <!-- Replace with actual logo -->
-                <span style="color: var(--primary); font-size: 24px;">EE</span>
-            </div>
+            <div class="logo-placeholder">EE</div>
             <div class="brand-name">
-                <h2>Elite Events Pro</h2>
+                <h1>Elite Events Pro</h1>
                 <p>Premium Event Planning Solutions</p>
             </div>
         </div>
 
         <div class="calculator-grid">
-            <!-- TESTIMONIAL SIDEBAR -->
-            <div class="testimonial-sidebar">
-                <h3>Trusted by Top Planners</h3>
-                
-                <div class="testimonial-card">
-                    <p>"This calculator helped us increase bookings by 30% while reducing quote time by 80%! Our clients love the instant estimates."</p>
-                    <div class="client-info">
-                        <div class="client-avatar">AO</div>
-                        <div>
-                            <div class="client-name">Amaka Okafor</div>
-                            <div class="client-title">CEO, Luxe Weddings NG</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial-card">
-                    <p>"Our average order value increased by 22% after implementing the package recommendations from this tool. Worth every naira!"</p>
-                    <div class="client-info">
-                        <div class="client-avatar">TJ</div>
-                        <div>
-                            <div class="client-name">Tunde Johnson</div>
-                            <div class="client-title">Events Director, Urban Affairs</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="testimonial-card">
-                    <p>"The AI suggestions help us upsell services we wouldn't have thought to offer. It's like having a sales assistant!"</p>
-                    <div class="client-info">
-                        <div class="client-avatar">KE</div>
-                        <div>
-                            <div class="client-name">Kemi Eze</div>
-                            <div class="client-title">Wedding Planner, Belle Events</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AI QUOTE SPOTLIGHT -->
-                <div class="ai-spotlight">
-                    <p id="ai-quote">"Based on 127 similar events in Lagos, clients who select premium decor spend 28% more on catering services."</p>
-                </div>
-            </div>
-
-            <!-- MAIN CALCULATOR -->
+            <!-- Calculator Body - FULL VERSION -->
             <div class="calculator-body">
-                <h3>Create Your Custom Quote</h3>
+                <h2>Plan Your Perfect Event</h2>
                 
                 <div class="input-group">
                     <label for="event-type">Event Type</label>
@@ -651,22 +268,23 @@
                         <option value="wedding">Wedding</option>
                         <option value="corporate">Corporate Event</option>
                         <option value="birthday">Birthday Party</option>
-                        <option value="other">Other Celebration</option>
+                        <option value="conference">Conference</option>
                     </select>
                 </div>
 
                 <div class="input-group">
-                    <label for="guests">Number of Guests: <span id="guest-value">50</span></label>
+                    <label for="guests">Number of Guests: <span id="guest-value">100</span></label>
                     <div class="slider-container">
-                        <input type="range" id="guests" class="slider" min="10" max="50" value="50" step="5">
+                        <!-- UNLOCKED: 10-1000 guests -->
+                        <input type="range" id="guests" class="slider" min="10" max="1000" value="100" step="10">
                     </div>
-                    <small style="color: var(--secondary); display: block; margin-top: 5px;">*Limited to 50 guests in demo version</small>
                 </div>
 
                 <div class="input-group">
                     <label>Add-On Services</label>
                     <div class="addons-grid">
-                        <div class="addon-card disabled" data-addon="photography">
+                        <!-- ALL ADDONS ENABLED -->
+                        <div class="addon-card" data-addon="photography">
                             <h3>Professional Photography</h3>
                             <p>+₦150,000</p>
                         </div>
@@ -674,7 +292,7 @@
                             <h3>DJ Services</h3>
                             <p>+₦80,000</p>
                         </div>
-                        <div class="addon-card disabled" data-addon="decor">
+                        <div class="addon-card" data-addon="decor">
                             <h3>Premium Decor</h3>
                             <p>+₦200,000</p>
                         </div>
@@ -682,11 +300,11 @@
                             <h3>Open Bar</h3>
                             <p>+₦120,000</p>
                         </div>
-                        <div class="addon-card disabled" data-addon="videography">
+                        <div class="addon-card" data-addon="videography">
                             <h3>Videography</h3>
                             <p>+₦180,000</p>
                         </div>
-                        <div class="addon-card disabled" data-addon="lighting">
+                        <div class="addon-card" data-addon="lighting">
                             <h3>Professional Lighting</h3>
                             <p>+₦90,000</p>
                         </div>
@@ -694,216 +312,253 @@
                 </div>
 
                 <div class="price-display">
-                    <h2>Estimated Total</h2>
-                    <div class="total" id="total-price">₦375,000</div>
-                    <p class="breakdown"><span id="base-price">₦300,000</span> base + <span id="addons-price">₦75,000</span> add-ons</p>
+                    <h3>Estimated Total</h3>
+                    <div class="total" id="total-price">₦850,000</div>
+                    <p class="breakdown"><span id="base-price">₦750,000</span> base + <span id="addons-price">₦100,000</span> add-ons</p>
+                    <button class="pdf-export">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Export as PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Testimonials Sidebar -->
+            <div class="testimonial-sidebar">
+                <div class="testimonial-card">
+                    <p>"This premium calculator helped us streamline our quoting process and increased our average order value by 28%."</p>
+                    <div class="client-info">
+                        <div class="client-avatar">AO</div>
+                        <div class="client-details">
+                            <h4>Amaka Okafor</h4>
+                            <p>CEO, Luxe Weddings NG</p>
+                        </div>
+                    </div>
                 </div>
 
-                <button class="cta-button" id="main-cta">Get Full Version</button>
-
-                <!-- DEMO LIMIT MESSAGE -->
-                <div class="demo-limit-message">
-                    <div class="icon">🔓</div>
-                    <div>
-                        <h4>Premium Features Locked</h4>
-                        <p>The full version includes unlimited guests, all 12 add-on services, client management dashboard, and PDF quote generation. <a href="#" style="color: var(--primary); font-weight: bold;">See feature comparison</a></p>
+                <div class="testimonial-card">
+                    <p>"The PDF export feature alone has saved us 10+ hours per week in admin work. Worth every penny!"</p>
+                    <div class="client-info">
+                        <div class="client-avatar">TJ</div>
+                        <div class="client-details">
+                            <h4>Tunde Johnson</h4>
+                            <p>Events Director</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- UPSELL FOOTER -->
-        <div class="upsell-footer">
-            <h3>Ready to Transform Your Event Business?</h3>
-            <p>Join 200+ event professionals who increased their revenue by an average of 35% with our complete toolkit.</p>
-            <button class="upsell-button">Schedule Private Demo</button>
-        </div>
     </div>
 
     <script>
-        // ===== DYNAMIC PRICING ENGINE =====
         document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const guestSlider = document.getElementById('guests');
-            const guestValue = document.getElementById('guest-value');
-            const eventType = document.getElementById('event-type');
-            const addonCards = document.querySelectorAll('.addon-card:not(.disabled)');
-            const totalPrice = document.getElementById('total-price');
-            const basePrice = document.getElementById('base-price');
-            const addonsPrice = document.getElementById('addons-price');
-            const mainCTA = document.getElementById('main-cta');
-            const aiQuote = document.getElementById('ai-quote');
+    // Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+    
+    // DOM Elements
+    const guestSlider = document.getElementById('guests');
+    const guestValue = document.getElementById('guest-value');
+    const eventType = document.getElementById('event-type');
+    const addonCards = document.querySelectorAll('.addon-card');
+    const totalPrice = document.getElementById('total-price');
+    const basePrice = document.getElementById('base-price');
+    const addonsPrice = document.getElementById('addons-price');
+    const pdfExportBtn = document.getElementById('export-pdf');
 
-            // Pricing Data
-            const baseRates = {
-                wedding: 7500,
-                corporate: 8000,
-                birthday: 6000,
-                other: 6500
-            };
+    // Pricing Data - FULL VERSION
+    const baseRates = {
+        wedding: 7500,
+        corporate: 8000,
+        birthday: 6000,
+        conference: 8500
+    };
 
-            const addonPrices = {
-                photography: 150000,
-                dj: 80000,
-                decor: 200000,
-                bar: 120000,
-                videography: 180000,
-                lighting: 90000
-            };
+    const addonPrices = {
+        photography: 150000,
+        dj: 80000,
+        decor: 200000,
+        bar: 120000,
+        videography: 180000,
+        lighting: 90000
+    };
 
-            // Event Type Details
-            const eventTypeDetails = {
-                wedding: {
-                    name: "Wedding",
-                    icon: "💍",
-                    baseRate: 7500,
-                    popularAddons: ["photography", "decor", "bar"]
-                },
-                corporate: {
-                    name: "Corporate Event",
-                    icon: "💼",
-                    baseRate: 8000,
-                    popularAddons: ["dj", "lighting"]
-                },
-                birthday: {
-                    name: "Birthday Party",
-                    icon: "🎂",
-                    baseRate: 6000,
-                    popularAddons: ["photography", "bar"]
-                },
-                other: {
-                    name: "Celebration",
-                    icon: "🎉",
-                    baseRate: 6500,
-                    popularAddons: ["dj", "bar"]
-                }
-            };
+    // Selected Addons
+    let selectedAddons = [];
 
-            // AI Quotes Database
-            const aiQuotes = {
-                wedding: [
-                    "Couples who book photography + decor spend 40% more on average.",
-                    "Weddings with premium add-ons have 30% higher client satisfaction ratings.",
-                    "Saturday weddings command 15% higher prices than weekdays."
-                ],
-                corporate: [
-                    "Corporate clients prefer all-inclusive packages with AV equipment.",
-                    "Add-on services increase corporate event budgets by 25% on average.",
-                    "Evening events typically spend 40% more on F&B than daytime."
-                ],
-                birthday: [
-                    "Birthday parties with photo booths have 22% higher engagement.",
-                    "Premium dessert stations increase average spend by ₦25,000.",
-                    "Themed decor packages can command 15-20% price premiums."
-                ],
-                other: [
-                    "Clients who bundle 3+ services get 10% discounts in 78% of cases.",
-                    "Evening events typically spend 30% more than daytime events.",
-                    "Premium packages have 40% faster booking conversion rates."
-                ]
-            };
+    // Update Guest Count
+    guestSlider.addEventListener('input', function() {
+        guestValue.textContent = this.value;
+        calculatePrice();
+    });
 
-            // Selected Addons
-            let selectedAddons = [];
+    // Event Type Change
+    eventType.addEventListener('change', calculatePrice);
 
-            // Update Guest Count Display
-            guestSlider.addEventListener('input', function() {
-                guestValue.textContent = this.value;
-                calculatePrice();
-                
-                // Change CTA text if at max demo guests
-                if (parseInt(this.value) >= 50) {
-                    mainCTA.textContent = "Upgrade for Larger Events";
-                } else {
-                    mainCTA.textContent = "Get Full Version";
-                }
-            });
-
-            // Event Type Change
-            eventType.addEventListener('change', function() {
-                calculatePrice();
-                updateAIQuote();
-            });
-
-            // Addon Selection
-            addonCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    this.classList.toggle('selected');
-                    const addon = this.dataset.addon;
-                    
-                    if (this.classList.contains('selected')) {
-                        selectedAddons.push(addon);
-                    } else {
-                        selectedAddons = selectedAddons.filter(item => item !== addon);
-                    }
-                    
-                    calculatePrice();
-                });
-            });
-
-            // Calculate Total Price
-            function calculatePrice() {
-                const guests = parseInt(guestSlider.value);
-                const event = eventType.value;
-                const baseCost = guests * baseRates[event];
-                
-                // Calculate addons
-                let addonsCost = 0;
-                selectedAddons.forEach(addon => {
-                    addonsCost += addonPrices[addon];
-                });
-
-                // Apply volume discount
-                let discount = 0;
-                if (guests >= 100) discount = baseCost * 0.05;
-                if (guests >= 200) discount = baseCost * 0.1;
-
-                const finalPrice = baseCost + addonsCost - discount;
-
-                // Update UI
-                basePrice.textContent = `₦${baseCost.toLocaleString()}`;
-                addonsPrice.textContent = `₦${addonsCost.toLocaleString()}`;
-                totalPrice.textContent = `₦${finalPrice.toLocaleString()}`;
-
-                // Pulse animation on price change
-                totalPrice.style.animation = 'none';
-                void totalPrice.offsetWidth; // Trigger reflow
-                totalPrice.style.animation = 'pulse 1s';
-            }
-
-            // Update AI Quote
-            function updateAIQuote() {
-                const event = eventType.value;
-                const quotes = aiQuotes[event];
-                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-                
-                // Fade animation
-                aiQuote.style.opacity = 0;
-                setTimeout(() => {
-                    aiQuote.textContent = randomQuote;
-                    aiQuote.style.opacity = 1;
-                }, 300);
-            }
-
-            // Rotate AI Quotes periodically
-            function rotateAIQuotes() {
-                setInterval(updateAIQuote, 8000);
-            }
-
-            // Initialize
-            calculatePrice();
-            rotateAIQuotes();
+    // Addon Selection
+    addonCards.forEach(card => {
+        card.addEventListener('click', function() {
+            this.classList.toggle('selected');
+            const addon = this.dataset.addon;
             
-            // Demo limitation warnings
-            mainCTA.addEventListener('click', function(e) {
-                if (parseInt(guestSlider.value) >= 50) {
-                    alert("✨ Upgrade required for events with 50+ guests\n\nOur premium version handles unlimited guests with advanced features:\n- All 12 add-on services\n- Client management dashboard\n- PDF quote generation\n- Priority support");
-                } else {
-                    alert("🚀 Get the complete event pricing toolkit!\n\nUnlock all features:\n- Unlimited guest capacity\n- Full add-on selection\n- Custom branding\n- Advanced reporting");
-                }
-                e.preventDefault();
-            });
+            if (this.classList.contains('selected')) {
+                selectedAddons.push(addon);
+            } else {
+                selectedAddons = selectedAddons.filter(item => item !== addon);
+            }
+            
+            calculatePrice();
         });
+    });
+
+    // Calculate Price - FULL VERSION WITH VOLUME DISCOUNTS
+    function calculatePrice() {
+        const guests = parseInt(guestSlider.value);
+        const event = eventType.value;
+        let baseCost = guests * baseRates[event];
+        
+        // Volume discounts
+        if (guests >= 200) baseCost *= 0.9; // 10% discount
+        else if (guests >= 100) baseCost *= 0.95; // 5% discount
+
+        // Calculate addons
+        let addonsCost = 0;
+        selectedAddons.forEach(addon => {
+            addonsCost += addonPrices[addon];
+        });
+
+        const finalPrice = baseCost + addonsCost;
+
+        // Update UI
+        basePrice.textContent = `₦${Math.round(baseCost).toLocaleString()}`;
+        addonsPrice.textContent = `₦${addonsCost.toLocaleString()}`;
+        totalPrice.textContent = `₦${Math.round(finalPrice).toLocaleString()}`;
+    }
+
+    // PDF Export Functionality
+    pdfExportBtn.addEventListener('click', generatePDF);
+
+    function generatePDF() {
+        const doc = new jsPDF();
+        
+        // Add logo placeholder
+        doc.setFillColor(90, 24, 154);
+        doc.circle(15, 15, 10, 'F');
+        doc.setFontSize(20);
+        doc.setTextColor(255, 255, 255);
+        doc.text('EE', 15, 19, { align: 'center' });
+        
+        // Add company info
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Elite Events Pro', 40, 20);
+        doc.setFontSize(10);
+        doc.text('Premium Event Planning Solutions', 40, 26);
+        
+        // Add quote title
+        doc.setFontSize(14);
+        doc.text('EVENT QUOTATION', 105, 20, { align: 'center' });
+        
+        // Add date
+        const today = new Date();
+        doc.text(`Date: ${today.toLocaleDateString()}`, 160, 20, { align: 'right' });
+        
+        // Add client info section
+        doc.setFontSize(12);
+        doc.text('Prepared for:', 15, 40);
+        doc.line(35, 41, 80, 41);
+        
+        // Add event details
+        doc.setFontSize(12);
+        doc.text('Event Details', 15, 55);
+        doc.line(35, 56, 80, 56);
+        
+        // Get calculator values
+        const eventTypeText = document.getElementById('event-type').options[document.getElementById('event-type').selectedIndex].text;
+        const guests = document.getElementById('guest-value').textContent;
+        const total = document.getElementById('total-price').textContent;
+        const base = document.getElementById('base-price').textContent;
+        const addons = document.getElementById('addons-price').textContent;
+        
+        // Create table data
+        const eventData = [
+            ['Event Type', eventTypeText],
+            ['Number of Guests', guests],
+            ['', '']
+        ];
+        
+        // Add selected addons
+        const addonsData = [];
+        document.querySelectorAll('.addon-card.selected').forEach(card => {
+            addonsData.push([card.querySelector('h3').textContent, card.querySelector('p').textContent]);
+        });
+        
+        // Pricing summary
+        const summaryData = [
+            ['Base Price', base],
+            ['Add-Ons', addons],
+            ['TOTAL', total]
+        ];
+        
+        // Add event details table
+        doc.autoTable({
+            startY: 60,
+            head: [['Item', 'Value']],
+            body: eventData,
+            theme: 'grid',
+            headStyles: { fillColor: [90, 24, 154] }
+        });
+        
+        // Add addons table if any
+        if (addonsData.length > 0) {
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 10,
+                head: [['Add-On Service', 'Price']],
+                body: addonsData,
+                theme: 'grid',
+                headStyles: { fillColor: [90, 24, 154] }
+            });
+        }
+        
+        // Add pricing summary
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 10,
+            body: summaryData,
+            theme: 'grid',
+            columnStyles: { 
+                0: { fontStyle: 'bold' },
+                1: { fontStyle: 'bold', halign: 'right' } 
+            },
+            styles: { 
+                fontSize: 14,
+                cellPadding: 5
+            },
+            didDrawCell: (data) => {
+                if (data.section === 'body' && data.column.index === 1 && data.row.index === 2) {
+                    doc.setFontSize(16);
+                    doc.setTextColor(90, 24, 154);
+                }
+            }
+        });
+        
+        // Add footer
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text('Thank you for your business!', 105, doc.lastAutoTable.finalY + 20, { align: 'center' });
+        doc.text('Terms: Valid for 30 days | 50% deposit required', 105, doc.lastAutoTable.finalY + 25, { align: 'center' });
+        
+        // Save the PDF
+        doc.save(`Event_Quote_${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}.pdf`);
+    }
+
+    // Initialize calculator
+    calculatePrice();
+});
     </script>
 </body>
 </html>
