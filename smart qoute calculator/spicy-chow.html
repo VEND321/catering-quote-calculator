@@ -658,497 +658,500 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const { jsPDF } = window.jspdf;
+    const { jsPDF } = window.jspdf;
+    
+    // DOM Elements
+    const guestSlider = document.getElementById('guests');
+    const guestValue = document.getElementById('guest-value');
+    const eventType = document.getElementById('event-type');
+    const addonCards = document.querySelectorAll('.addon-card');
+    const totalPrice = document.getElementById('total-price');
+    const basePrice = document.getElementById('base-price');
+    const addonsPrice = document.getElementById('addons-price');
+    const pdfExportBtn = document.getElementById('export-pdf');
+    const whatsappBtn = document.getElementById('whatsapp-share');
+    const clientNameInput = document.getElementById('client-name');
+    const clientEmailInput = document.getElementById('client-email');
+    const clientPhoneInput = document.getElementById('client-phone');
+    const eventDateInput = document.getElementById('event-date');
+    const rateDisplay = document.getElementById('rate-display');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+
+    // Pricing Data
+    const baseRates = {
+        wedding: 7500,
+        corporate: 8000,
+        birthday: 6000,
+        conference: 8500
+    };
+
+    const eventTypeNames = {
+        wedding: "Wedding",
+        corporate: "Corporate Event",
+        birthday: "Birthday Party",
+        conference: "Conference"
+    };
+
+    const addonPrices = {
+        photography: 150000,
+        dj: 80000,
+        decor: 200000,
+        bar: 120000,
+        videography: 180000,
+        lighting: 90000
+    };
+
+    // Selected Addons
+    let selectedAddons = [];
+
+    // Dark Mode Toggle
+    darkModeToggle.addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode', this.checked);
+        localStorage.setItem('darkMode', this.checked);
+    });
+
+    // Check for saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        darkModeToggle.checked = true;
+        document.body.classList.add('dark-mode');
+    }
+
+    // Event Listeners
+    guestSlider.addEventListener('input', function() {
+        guestValue.textContent = this.value;
+        calculatePrice();
+    });
+
+    eventType.addEventListener('change', function() {
+        updateRateDisplay();
+        calculatePrice();
+        // Enable/disable PDF export based on selection
+        pdfExportBtn.disabled = !this.value;
+        whatsappBtn.disabled = !this.value;
+    });
+
+    addonCards.forEach(card => {
+        card.addEventListener('click', function() {
+            this.classList.toggle('selected');
+            const addon = this.dataset.addon;
             
-            // DOM Elements
-            const guestSlider = document.getElementById('guests');
-            const guestValue = document.getElementById('guest-value');
-            const eventType = document.getElementById('event-type');
-            const addonCards = document.querySelectorAll('.addon-card');
-            const totalPrice = document.getElementById('total-price');
-            const basePrice = document.getElementById('base-price');
-            const addonsPrice = document.getElementById('addons-price');
-            const pdfExportBtn = document.getElementById('export-pdf');
-            const whatsappBtn = document.getElementById('whatsapp-share');
-            const clientNameInput = document.getElementById('client-name');
-            const clientEmailInput = document.getElementById('client-email');
-            const clientPhoneInput = document.getElementById('client-phone');
-            const eventDateInput = document.getElementById('event-date');
-            const rateDisplay = document.getElementById('rate-display');
-            const darkModeToggle = document.getElementById('darkModeToggle');
-
-            // Pricing Data
-            const baseRates = {
-                wedding: 7500,
-                corporate: 8000,
-                birthday: 6000,
-                conference: 8500
-            };
-
-            const eventTypeNames = {
-                wedding: "Wedding",
-                corporate: "Corporate Event",
-                birthday: "Birthday Party",
-                conference: "Conference"
-            };
-
-            const addonPrices = {
-                photography: 150000,
-                dj: 80000,
-                decor: 200000,
-                bar: 120000,
-                videography: 180000,
-                lighting: 90000
-            };
-
-            // Selected Addons
-            let selectedAddons = [];
-
-            // Dark Mode Toggle
-            darkModeToggle.addEventListener('change', function() {
-                document.body.classList.toggle('dark-mode', this.checked);
-                localStorage.setItem('darkMode', this.checked);
-            });
-
-            // Check for saved dark mode preference
-            if (localStorage.getItem('darkMode') === 'true') {
-                darkModeToggle.checked = true;
-                document.body.classList.add('dark-mode');
+            if (this.classList.contains('selected')) {
+                selectedAddons.push(addon);
+            } else {
+                selectedAddons = selectedAddons.filter(item => item !== addon);
             }
-
-            // Event Listeners
-            guestSlider.addEventListener('input', function() {
-                guestValue.textContent = this.value;
-                calculatePrice();
-            });
-
-            eventType.addEventListener('change', function() {
-                updateRateDisplay();
-                calculatePrice();
-                // Enable/disable PDF export based on selection
-                pdfExportBtn.disabled = !this.value;
-                whatsappBtn.disabled = !this.value;
-            });
-
-            addonCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    this.classList.toggle('selected');
-                    const addon = this.dataset.addon;
-                    
-                    if (this.classList.contains('selected')) {
-                        selectedAddons.push(addon);
-                    } else {
-                        selectedAddons = selectedAddons.filter(item => item !== addon);
-                    }
-                    
-                    calculatePrice();
-                });
-
-                // Keyboard accessibility
-                card.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        this.click();
-                    }
-                });
-            });
-
-            // Update rate display
-            function updateRateDisplay() {
-                const event = eventType.value;
-                if (event) {
-                    rateDisplay.textContent = `Rate: ₦${baseRates[event].toLocaleString()} per guest (${eventTypeNames[event]})`;
-                } else {
-                    rateDisplay.textContent = 'Rate: ₦0 per guest';
-                }
-            }
-
-            // Calculate Price
-            function calculatePrice() {
-                const guests = parseInt(guestSlider.value);
-                const event = eventType.value;
-                let baseCost = 0;
-                
-                if (event) {
-                    baseCost = guests * baseRates[event];
-                    
-                    // Volume discounts
-                    if (guests >= 200) baseCost *= 0.9;
-                    else if (guests >= 100) baseCost *= 0.95;
-                }
-
-                const addonsCost = selectedAddons.reduce((sum, addon) => sum + addonPrices[addon], 0);
-                const finalPrice = baseCost + addonsCost;
-
-                // Update UI
-                basePrice.textContent = `₦${Math.round(baseCost).toLocaleString()}`;
-                addonsPrice.textContent = `₦${addonsCost.toLocaleString()}`;
-                totalPrice.textContent = `₦${Math.round(finalPrice).toLocaleString()}`;
-
-                // Save to localStorage
-                saveQuoteToStorage();
-            }
-
-            // Save quote to localStorage
-            function saveQuoteToStorage() {
-                const quoteData = {
-                    clientName: clientNameInput.value,
-                    eventDate: eventDateInput.value,
-                    clientEmail: clientEmailInput.value,
-                    clientPhone: clientPhoneInput.value,
-                    eventType: eventType.value,
-                    guests: guestSlider.value,
-                    selectedAddons: selectedAddons,
-                    totalPrice: totalPrice.textContent,
-                    basePrice: basePrice.textContent,
-                    addonsPrice: addonsPrice.textContent
-                };
-                localStorage.setItem('eventQuote', JSON.stringify(quoteData));
-            }
-
-            // Load quote from localStorage
-            function loadQuoteFromStorage() {
-                const savedQuote = localStorage.getItem('eventQuote');
-                if (savedQuote) {
-                    const quoteData = JSON.parse(savedQuote);
-                    
-                    clientNameInput.value = quoteData.clientName || '';
-                    eventDateInput.value = quoteData.eventDate || '';
-                    clientEmailInput.value = quoteData.clientEmail || '';
-                    clientPhoneInput.value = quoteData.clientPhone || '';
-                    
-                    if (quoteData.eventType) {
-                        eventType.value = quoteData.eventType;
-                        updateRateDisplay();
-                    }
-                    
-                    if (quoteData.guests) {
-                        guestSlider.value = quoteData.guests;
-                        guestValue.textContent = quoteData.guests;
-                    }
-                    
-                    if (quoteData.selectedAddons) {
-                        selectedAddons = quoteData.selectedAddons;
-                        // Update UI for selected addons
-                        addonCards.forEach(card => {
-                            if (selectedAddons.includes(card.dataset.addon)) {
-                                card.classList.add('selected');
-                            } else {
-                                card.classList.remove('selected');
-                            }
-                        });
-                    }
-                    
-                    // Enable buttons if event type is selected
-                    if (quoteData.eventType) {
-                        pdfExportBtn.disabled = false;
-                        whatsappBtn.disabled = false;
-                    }
-                    
-                    // Recalculate price
-                    calculatePrice();
-                }
-            }
-
-            // PDF Export Functionality
-            pdfExportBtn.addEventListener('click', async function() {
-                // Validate required fields
-                if (!clientNameInput.value || !eventDateInput.value || !eventType.value) {
-                    alert('Please fill in all required fields (Client Name, Event Date, and Event Type)');
-                    return;
-                }
-
-                const doc = new jsPDF();
-                const today = new Date();
-                const dateString = today.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-
-                // Add logo with rounded corners
-                try {
-                    // Replace with your actual logo URL
-                    const logoUrl = 'asset/logo.jpeg';
-                    const logoData = await getImageData(logoUrl);
-                    
-                    // Create rounded corners using clipping
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 150;
-                    canvas.height = 150;
-                    
-                    // Create circular clipping path
-                    ctx.beginPath();
-                    ctx.arc(75, 75, 75, 0, Math.PI * 2);
-                    ctx.closePath();
-                    ctx.clip();
-                    
-                    // Draw image
-                    const img = new Image();
-                    img.onload = function() {
-                        ctx.drawImage(img, 0, 0, 150, 150);
-                        const roundedLogo = canvas.toDataURL('image/png');
-                        
-                        // Add to PDF
-                        doc.addImage(roundedLogo, 'PNG', 15, 15, 30, 30);
-                        continuePDFGeneration();
-                    };
-                    img.src = logoUrl;
-                } catch (error) {
-                    console.error('Error loading logo:', error);
-                    // Fallback to text logo
-                    doc.setFontSize(16).setTextColor(90, 24, 154)
-                       .setFont('helvetica', 'bold')
-                       .text('Spicy Chow', 15, 25);
-                    continuePDFGeneration();
-                }
-
-                function continuePDFGeneration() {
-                    // Header Section
-                    doc.setFontSize(10).setTextColor(100)
-                       .text(`Generated: ${dateString}`, 160, 20, { align: 'right' });
-                    
-                    doc.setFontSize(18).setTextColor(40)
-                       .setFont('helvetica', 'bold')
-                       .text('EVENT QUOTATION', 105, 40, { align: 'center' });
-
-                    // Client Information Section
-                    doc.setFontSize(12).setTextColor(90, 24, 154)
-                       .text('CLIENT INFORMATION', 15, 60);
-                    doc.setDrawColor(90, 24, 154).setLineWidth(0.5)
-                       .line(15, 62, 60, 62);
-
-                    // Client Info Table
-                    doc.autoTable({
-                        startY: 70,
-                        columns: [
-                            { header: 'Field', dataKey: 'field' },
-                            { header: 'Details', dataKey: 'value' }
-                        ],
-                        body: [
-                            { field: 'Client Name', value: clientNameInput.value },
-                            { field: 'Event Date', value: formatDate(eventDateInput.value) },
-                            { field: 'Email', value: clientEmailInput.value || 'Not provided' },
-                            { field: 'Phone', value: clientPhoneInput.value || 'Not provided' }
-                        ],
-                        headStyles: { 
-                            fillColor: [139, 0, 0],
-                            textColor: 255,
-                            fontStyle: 'bold'
-                        },
-                        columnStyles: {
-                            field: { fontStyle: 'bold' }
-                        },
-                        styles: { 
-                            cellPadding: 5,
-                            fontSize: 10
-                        },
-                        theme: 'grid'
-                    });
-
-                    // Event Details Section
-                    doc.setFontSize(12).setTextColor(90, 24, 154)
-                       .text('EVENT DETAILS', 15, doc.lastAutoTable.finalY + 15);
-                    doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
-
-                    const eventTypeText = eventType.options[eventType.selectedIndex].text;
-                    const guests = guestValue.textContent;
-                    
-                    doc.autoTable({
-                        startY: doc.lastAutoTable.finalY + 20,
-                        columns: [
-                            { header: 'Event Type', dataKey: 'type' },
-                            { header: 'Guests', dataKey: 'guests' },
-                            { header: 'Rate', dataKey: 'rate' }
-                        ],
-                        body: [
-                            { 
-                                type: eventTypeText, 
-                                guests: guests,
-                                rate: `₦${baseRates[eventType.value].toLocaleString()} per guest`
-                            }
-                        ],
-                        headStyles: { 
-                            fillColor: [139, 0, 0],
-                            textColor: 255
-                        },
-                        styles: { 
-                            cellPadding: 5
-                        },
-                        theme: 'grid'
-                    });
-
-                    // Services Section
-                    if (selectedAddons.length > 0) {
-                        doc.setFontSize(12).setTextColor(90, 24, 154)
-                           .text('SELECTED SERVICES', 15, doc.lastAutoTable.finalY + 15);
-                        doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
-
-                        const servicesData = selectedAddons.map(addon => {
-                            const card = document.querySelector(`.addon-card[data-addon="${addon}"]`);
-                            return {
-                                service: card.querySelector('h3').textContent,
-                                price: card.querySelector('p').textContent
-                            };
-                        });
-
-                        doc.autoTable({
-                            startY: doc.lastAutoTable.finalY + 20,
-                            columns: [
-                                { header: 'Service', dataKey: 'service' },
-                                { header: 'Price', dataKey: 'price' }
-                            ],
-                            body: servicesData,
-                            headStyles: { 
-                                fillColor: [139, 0, 0],
-                                textColor: 255
-                            },
-                            columnStyles: {
-                                price: { halign: 'right' }
-                            },
-                            styles: { 
-                                cellPadding: 5
-                            },
-                            theme: 'grid'
-                        });
-                    }
-
-                    // Pricing Summary
-                    doc.setFontSize(12).setTextColor(90, 24, 154)
-                       .text('PRICING SUMMARY', 15, doc.lastAutoTable.finalY + 15);
-                    doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
-
-                    const summaryData = [
-                        { item: 'Base Price', amount: basePrice.textContent },
-                        { item: 'Add-Ons', amount: addonsPrice.textContent },
-                        { item: 'TOTAL', amount: totalPrice.textContent }
-                    ];
-
-                    doc.autoTable({
-                        startY: doc.lastAutoTable.finalY + 20,
-                        columns: [
-                            { header: 'Item', dataKey: 'item' },
-                            { header: 'Amount', dataKey: 'amount' }
-                        ],
-                        body: summaryData,
-                        headStyles: { 
-                            fillColor: [139, 0, 0],
-                            textColor: 255
-                        },
-                        columnStyles: {
-                            amount: { halign: 'right' }
-                        },
-                        bodyStyles: {
-                            fontSize: 12
-                        },
-                        styles: { 
-                            cellPadding: 5
-                        },
-                        theme: 'grid',
-                        didParseCell: function(data) {
-                            if (data.row.index === 2) { // Total row
-                                data.cell.styles.fontStyle = 'bold';
-                                data.cell.styles.textColor = [90, 24, 154];
-                                data.cell.styles.fontSize = 14;
-                            }
-                        }
-                    });
-
-                    // Footer
-                    doc.setFontSize(10).setTextColor(100)
-                       .text('Thank you for choosing Spicy Chow!', 105, doc.lastAutoTable.finalY + 20, { align: 'center' })
-                       .text('Terms: Quote valid for 30 days | 50% deposit required to secure date', 105, doc.lastAutoTable.finalY + 25, { align: 'center' })
-                       .text('Contact: info@spicychow.com | +234 813 577 0477', 105, doc.lastAutoTable.finalY + 30, { align: 'center' });
-
-                    // Save PDF
-                    doc.save(`Quote_${clientNameInput.value.replace(/\s+/g, '_')}_${eventTypeText.replace(/\s+/g, '_')}_${formatDateForFilename(eventDateInput.value)}.pdf`);
-                }
-            });
-
-            // WhatsApp Integration
-            whatsappBtn.addEventListener('click', function() {
-                if (!clientNameInput.value || !eventDateInput.value || !eventType.value) {
-                    alert('Please fill in all required fields (Client Name, Event Date, and Event Type)');
-                    return;
-                }
-
-                const eventTypeText = eventType.options[eventType.selectedIndex].text;
-                const guests = guestValue.textContent;
-                
-                let message = `Hello, here's your event quote:\n\n`;
-                message += `Name: ${clientNameInput.value}\n`;
-                message += `Event: ${eventTypeText} | Guests: ${guests}\n`;
-                message += `Total: ${totalPrice.textContent}\n\n`;
-                
-                if (selectedAddons.length > 0) {
-                    message += `Includes:\n`;
-                    selectedAddons.forEach(addon => {
-                        const card = document.querySelector(`.addon-card[data-addon="${addon}"]`);
-                        message += `- ${card.querySelector('h3').textContent} ${card.querySelector('p').textContent}\n`;
-                    });
-                }
-                
-                message += `\nPlease let us know if you have any questions!`;
-                
-                const encodedMessage = encodeURIComponent(message);
-                const whatsappUrl = `https://wa.me/2348135770477?text=${encodedMessage}`;
-                
-                window.open(whatsappUrl, '_blank');
-            });
-
-            // Helper functions
-            function getImageData(url) {
-                return new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.crossOrigin = 'Anonymous';
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        const ctx = canvas.getContext('2d');
-                        
-                        // Create rounded corners
-                        ctx.beginPath();
-                        ctx.arc(canvas.width/2, canvas.height/2, canvas.width/2, 0, Math.PI*2);
-                        ctx.closePath();
-                        ctx.clip();
-                        
-                        ctx.drawImage(img, 0, 0);
-                        resolve(canvas.toDataURL('image/png'));
-                    };
-                    img.onerror = reject;
-                    img.src = url;
-                });
-            }
-
-            function formatDate(dateString) {
-                if (!dateString) return 'Not specified';
-                const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-            }
-
-            function formatDateForFilename(dateString) {
-                if (!dateString) return '';
-                const date = new Date(dateString);
-                return `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`;
-            }
-
-            // Initialize calculator
-            updateRateDisplay();
-            loadQuoteFromStorage();
             
-            // Save form data when inputs change
-            const formInputs = document.querySelectorAll('input, select');
-            formInputs.forEach(input => {
-                input.addEventListener('change', saveQuoteToStorage);
-                input.addEventListener('input', saveQuoteToStorage);
-            });
+            calculatePrice();
         });
+
+        // Keyboard accessibility
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+    });
+
+    // Update rate display
+    function updateRateDisplay() {
+        const event = eventType.value;
+        if (event) {
+            rateDisplay.textContent = `Rate: ₦${baseRates[event].toLocaleString()} per guest (${eventTypeNames[event]})`;
+        } else {
+            rateDisplay.textContent = 'Rate: ₦0 per guest';
+        }
+    }
+
+    // Calculate Price
+    function calculatePrice() {
+        const guests = parseInt(guestSlider.value);
+        const event = eventType.value;
+        let baseCost = 0;
+        
+        if (event) {
+            baseCost = guests * baseRates[event];
+            
+            // Volume discounts
+            if (guests >= 200) baseCost *= 0.9;
+            else if (guests >= 100) baseCost *= 0.95;
+        }
+
+        const addonsCost = selectedAddons.reduce((sum, addon) => sum + addonPrices[addon], 0);
+        const finalPrice = baseCost + addonsCost;
+
+        // Update UI
+        basePrice.textContent = `₦${Math.round(baseCost).toLocaleString()}`;
+        addonsPrice.textContent = `₦${addonsCost.toLocaleString()}`;
+        totalPrice.textContent = `₦${Math.round(finalPrice).toLocaleString()}`;
+
+        // Save to localStorage
+        saveQuoteToStorage();
+    }
+
+    // Save quote to localStorage
+    function saveQuoteToStorage() {
+        const quoteData = {
+            clientName: clientNameInput.value,
+            eventDate: eventDateInput.value,
+            clientEmail: clientEmailInput.value,
+            clientPhone: clientPhoneInput.value,
+            eventType: eventType.value,
+            guests: guestSlider.value,
+            selectedAddons: selectedAddons,
+            totalPrice: totalPrice.textContent,
+            basePrice: basePrice.textContent,
+            addonsPrice: addonsPrice.textContent
+        };
+        localStorage.setItem('eventQuote', JSON.stringify(quoteData));
+    }
+
+    // Load quote from localStorage
+    function loadQuoteFromStorage() {
+        const savedQuote = localStorage.getItem('eventQuote');
+        if (savedQuote) {
+            const quoteData = JSON.parse(savedQuote);
+            
+            clientNameInput.value = quoteData.clientName || '';
+            eventDateInput.value = quoteData.eventDate || '';
+            clientEmailInput.value = quoteData.clientEmail || '';
+            clientPhoneInput.value = quoteData.clientPhone || '';
+            
+            if (quoteData.eventType) {
+                eventType.value = quoteData.eventType;
+                updateRateDisplay();
+            }
+            
+            if (quoteData.guests) {
+                guestSlider.value = quoteData.guests;
+                guestValue.textContent = quoteData.guests;
+            }
+            
+            if (quoteData.selectedAddons) {
+                selectedAddons = quoteData.selectedAddons;
+                // Update UI for selected addons
+                addonCards.forEach(card => {
+                    if (selectedAddons.includes(card.dataset.addon)) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                });
+            }
+            
+            // Enable buttons if event type is selected
+            if (quoteData.eventType) {
+                pdfExportBtn.disabled = false;
+                whatsappBtn.disabled = false;
+            }
+            
+            // Recalculate price
+            calculatePrice();
+        }
+    }
+
+    // PDF Export Functionality
+    pdfExportBtn.addEventListener('click', async function() {
+        // Validate required fields
+        if (!clientNameInput.value || !eventDateInput.value || !eventType.value) {
+            alert('Please fill in all required fields (Client Name, Event Date, and Event Type)');
+            return;
+        }
+
+        const doc = new jsPDF();
+        const today = new Date();
+        const dateString = today.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+
+        // Add logo with rounded corners
+        try {
+            // Replace with your actual logo URL
+            const logoUrl = 'asset/logo.jpeg';
+            const logoData = await getImageData(logoUrl);
+            
+            // Create rounded corners using clipping
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 150;
+            canvas.height = 150;
+            
+            // Create circular clipping path
+            ctx.beginPath();
+            ctx.arc(75, 75, 75, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+            
+            // Draw image
+            const img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, 150, 150);
+                const roundedLogo = canvas.toDataURL('image/png');
+                
+                // Add to PDF
+                doc.addImage(roundedLogo, 'PNG', 15, 15, 30, 30);
+                continuePDFGeneration();
+            };
+            img.src = logoUrl;
+        } catch (error) {
+            console.error('Error loading logo:', error);
+            // Fallback to text logo
+            doc.setFontSize(18).setTextColor(139, 0, 0)
+               .setFont('helvetica', 'bold')
+               .text('Spicy Chow', 15, 25);
+            continuePDFGeneration();
+        }
+
+        function continuePDFGeneration() {
+            // Header Section
+            doc.setFontSize(12).setTextColor(100)
+               .text(`Generated: ${dateString}`, 160, 20, { align: 'right' });
+            
+            doc.setFontSize(22).setTextColor(40)
+               .setFont('helvetica', 'bold')
+               .text('EVENT QUOTATION', 105, 45, { align: 'center' });
+
+            // Client Information Section
+            doc.setFontSize(20).setTextColor(40)
+               .text('CLIENT INFORMATION', 15, 65);
+            doc.setDrawColor(139, 0, 0).setLineWidth(0.5)
+               .line(15, 67, 65, 67);
+
+            // Client Info Table
+            doc.autoTable({
+                startY: 75,
+                columns: [
+                    { header: 'Field', dataKey: 'field' },
+                    { header: 'Details', dataKey: 'value' }
+                ],
+                body: [
+                    { field: 'Client Name', value: clientNameInput.value },
+                    { field: 'Event Date', value: formatDate(eventDateInput.value) },
+                    { field: 'Email', value: clientEmailInput.value || 'Not provided' },
+                    { field: 'Phone', value: clientPhoneInput.value || 'Not provided' }
+                ],
+                headStyles: { 
+                    fillColor: [100, 0, 0],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    field: { fontStyle: 'bold' }
+                },
+                styles: { 
+                    cellPadding: 6,
+                    fontSize: 12
+                },
+                theme: 'grid'
+            });
+
+            // Event Details Section
+            doc.setFontSize(20).setTextColor(139, 0, 0)
+               .text('EVENT DETAILS', 15, doc.lastAutoTable.finalY + 20);
+            doc.line(15, doc.lastAutoTable.finalY + 22, 65, doc.lastAutoTable.finalY + 22);
+
+            const eventTypeText = eventType.options[eventType.selectedIndex].text;
+            const guests = guestValue.textContent;
+            
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 25,
+                columns: [
+                    { header: 'Event Type', dataKey: 'type' },
+                    { header: 'Guests', dataKey: 'guests' },
+                    { header: 'Rate', dataKey: 'rate' }
+                ],
+                body: [
+                    { 
+                        type: eventTypeText, 
+                        guests: guests,
+                        rate: `₦${baseRates[eventType.value].toLocaleString()} per guest`
+                    }
+                ],
+                headStyles: { 
+                    fillColor: [100, 0, 0],
+                    textColor: 255
+                },
+                styles: { 
+                    cellPadding: 6,
+                    fontSize: 12
+                },
+                theme: 'grid'
+            });
+
+            // Services Section
+            if (selectedAddons.length > 0) {
+                doc.setFontSize(14).setTextColor(139, 0, 0)
+                   .text('SELECTED SERVICES', 15, doc.lastAutoTable.finalY + 20);
+                doc.line(15, doc.lastAutoTable.finalY + 22, 65, doc.lastAutoTable.finalY + 22);
+
+                const servicesData = selectedAddons.map(addon => {
+                    const card = document.querySelector(`.addon-card[data-addon="${addon}"]`);
+                    return {
+                        service: card.querySelector('h3').textContent,
+                        price: card.querySelector('p').textContent
+                    };
+                });
+
+                doc.autoTable({
+                    startY: doc.lastAutoTable.finalY + 25,
+                    columns: [
+                        { header: 'Service', dataKey: 'service' },
+                        { header: 'Price', dataKey: 'price' }
+                    ],
+                    body: servicesData,
+                    headStyles: { 
+                        fillColor: [100, 0, 0],
+                        textColor: 255
+                    },
+                    columnStyles: {
+                        price: { halign: 'right' }
+                    },
+                    styles: { 
+                        cellPadding: 6,
+                        fontSize: 12
+                    },
+                    theme: 'grid'
+                });
+            }
+
+            // Pricing Summary
+            doc.setFontSize(20).setTextColor(139, 0, 0)
+               .text('PRICING SUMMARY', 15, doc.lastAutoTable.finalY + 20);
+            doc.line(15, doc.lastAutoTable.finalY + 22, 65, doc.lastAutoTable.finalY + 22);
+
+            const summaryData = [
+                { item: 'Base Price', amount: basePrice.textContent },
+                { item: 'Add-Ons', amount: addonsPrice.textContent },
+                { item: 'TOTAL', amount: totalPrice.textContent }
+            ];
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 25,
+                columns: [
+                    { header: 'Item', dataKey: 'item' },
+                    { header: 'Amount', dataKey: 'amount' }
+                ],
+                body: summaryData,
+                headStyles: { 
+                    fillColor: [100, 0, 0],
+                    textColor: 255
+                },
+                columnStyles: {
+                    amount: { halign: 'right' }
+                },
+                bodyStyles: {
+                    fontSize: 14
+                },
+                styles: { 
+                    cellPadding: 6
+                },
+                theme: 'grid',
+                didParseCell: function(data) {
+                    if (data.row.index === 2) { // Total row
+                        data.cell.styles.fontStyle = 'bold';
+                        data.cell.styles.textColor = [139, 0, 0];
+                        data.cell.styles.fontSize = 16;
+                    }
+                }
+            });
+
+            // Footer
+            doc.setFontSize(12).setTextColor(100)
+               .text('Thank you for choosing Spicy Chow!', 105, doc.lastAutoTable.finalY + 25, { align: 'center' })
+               .text('Terms: Quote valid for 30 days | 50% deposit required to secure date', 105, doc.lastAutoTable.finalY + 30, { align: 'center' })
+               .text('Contact: info@spicychow.com | +234 813 577 0477', 105, doc.lastAutoTable.finalY + 35, { align: 'center' });
+
+            // Save PDF
+            doc.save(`Quote_${clientNameInput.value.replace(/\s+/g, '_')}_${eventTypeText.replace(/\s+/g, '_')}_${formatDateForFilename(eventDateInput.value)}.pdf`);
+        }
+    });
+
+    // WhatsApp Integration
+    whatsappBtn.addEventListener('click', function() {
+        if (!clientNameInput.value || !eventDateInput.value || !eventType.value) {
+            alert('Please fill in all required fields (Client Name, Event Date, and Event Type)');
+            return;
+        }
+
+        const eventTypeText = eventType.options[eventType.selectedIndex].text;
+        const guests = guestValue.textContent;
+        
+        let message = `Hello, here's your event quote:\n\n`;
+        message += `Name: ${clientNameInput.value}\n`;
+        message += `Event: ${eventTypeText} | Guests: ${guests}\n`;
+        message += `Total: ${totalPrice.textContent}\n\n`;
+        
+        if (selectedAddons.length > 0) {
+            message += `Includes:\n`;
+            selectedAddons.forEach(addon => {
+                const card = document.querySelector(`.addon-card[data-addon="${addon}"]`);
+                message += `- ${card.querySelector('h3').textContent} ${card.querySelector('p').textContent}\n`;
+            });
+        }
+        
+        message += `\nPlease let us know if you have any questions!`;
+        
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/2348135770477?text=${encodedMessage}`;
+        
+        window.open(whatsappUrl, '_blank');
+    });
+
+    // Helper functions
+    function getImageData(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                
+                // Create rounded corners
+                ctx.beginPath();
+                ctx.arc(canvas.width/2, canvas.height/2, canvas.width/2, 0, Math.PI*2);
+                ctx.closePath();
+                ctx.clip();
+                
+                ctx.drawImage(img, 0, 0);
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.onerror = reject;
+            img.src = url;
+        });
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return 'Not specified';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    }
+
+    function formatDateForFilename(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return `${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}`;
+    }
+
+    // Initialize calculator
+    updateRateDisplay();
+    loadQuoteFromStorage();
+    
+    // Save form data when inputs change
+    const formInputs = document.querySelectorAll('input, select');
+    formInputs.forEach(input => {
+        input.addEventListener('change', saveQuoteToStorage);
+        input.addEventListener('input', saveQuoteToStorage);
+    });
+});
+
     </script>
 </body>
 </html>
