@@ -896,166 +896,164 @@
                     };
                     img.src = logoUrl;
                 } catch (error) {
-    console.error('Error loading logo:', error);
-    // Fallback to text logo
-    doc.setFontSize(16).setTextColor(139, 0, 0)
-       .setFont('helvetica', 'bold')
-       .text('Spicy Chow', 15, 25);
-    continuePDFGeneration();
-}
+                    console.error('Error loading logo:', error);
+                    // Fallback to text logo
+                    doc.setFontSize(16).setTextColor(90, 24, 154)
+                       .setFont('helvetica', 'bold')
+                       .text('Spicy Chow', 15, 25);
+                    continuePDFGeneration();
+                }
 
-function continuePDFGeneration() {
-    // Header Section
-    doc.setFontSize(10).setTextColor(100)
-       .text(`Generated: ${dateString}`, 160, 20, { align: 'right' });
+                function continuePDFGeneration() {
+                    // Header Section
+                    doc.setFontSize(10).setTextColor(100)
+                       .text(`Generated: ${dateString}`, 160, 20, { align: 'right' });
+                    
+                    doc.setFontSize(18).setTextColor(40)
+                       .setFont('helvetica', 'bold')
+                       .text('EVENT QUOTATION', 105, 40, { align: 'center' });
 
-    doc.setFontSize(18).setTextColor(40)
-       .setFont('helvetica', 'bold')
-       .text('EVENT QUOTATION', 105, 40, { align: 'center' });
+                    // Client Information Section
+                    doc.setFontSize(12).setTextColor(90, 24, 154)
+                       .text('CLIENT INFORMATION', 15, 60);
+                    doc.setDrawColor(90, 24, 154).setLineWidth(0.5)
+                       .line(15, 62, 60, 62);
 
-    // Client Information Section
-    doc.setFontSize(12).setTextColor(139, 0, 0)
-       .text('CLIENT INFORMATION', 15, 60);
-    doc.setDrawColor(139, 0, 0).setLineWidth(0.5)
-       .line(15, 62, 60, 62);
+                    // Client Info Table
+                    doc.autoTable({
+                        startY: 70,
+                        columns: [
+                            { header: 'Field', dataKey: 'field' },
+                            { header: 'Details', dataKey: 'value' }
+                        ],
+                        body: [
+                            { field: 'Client Name', value: clientNameInput.value },
+                            { field: 'Event Date', value: formatDate(eventDateInput.value) },
+                            { field: 'Email', value: clientEmailInput.value || 'Not provided' },
+                            { field: 'Phone', value: clientPhoneInput.value || 'Not provided' }
+                        ],
+                        headStyles: { 
+                            fillColor: [139, 0, 0],
+                            textColor: 255,
+                            fontStyle: 'bold'
+                        },
+                        columnStyles: {
+                            field: { fontStyle: 'bold' }
+                        },
+                        styles: { 
+                            cellPadding: 5,
+                            fontSize: 10
+                        },
+                        theme: 'grid'
+                    });
 
-    // Client Info Table
-    doc.autoTable({
-        startY: 70,
-        columns: [
-            { header: 'Field', dataKey: 'field' },
-            { header: 'Details', dataKey: 'value' }
-        ],
-        body: [
-            { field: 'Client Name', value: clientNameInput.value },
-            { field: 'Event Date', value: formatDate(eventDateInput.value) },
-            { field: 'Email', value: clientEmailInput.value || 'Not provided' },
-            { field: 'Phone', value: clientPhoneInput.value || 'Not provided' }
-        ],
-        headStyles: { 
-            fillColor: [139, 0, 0],
-            textColor: 255,
-            fontStyle: 'bold'
-        },
-        columnStyles: {
-            field: { fontStyle: 'bold' }
-        },
-        styles: { 
-            cellPadding: 5,
-            fontSize: 10
-        },
-        theme: 'grid'
-    });
+                    // Event Details Section
+                    doc.setFontSize(12).setTextColor(90, 24, 154)
+                       .text('EVENT DETAILS', 15, doc.lastAutoTable.finalY + 15);
+                    doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
 
-    // Event Details Section
-    doc.setFontSize(12).setTextColor(139, 0, 0)
-       .text('EVENT DETAILS', 15, doc.lastAutoTable.finalY + 15);
-    doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
+                    const eventTypeText = eventType.options[eventType.selectedIndex].text;
+                    const guests = guestValue.textContent;
+                    
+                    doc.autoTable({
+                        startY: doc.lastAutoTable.finalY + 20,
+                        columns: [
+                            { header: 'Event Type', dataKey: 'type' },
+                            { header: 'Guests', dataKey: 'guests' },
+                            { header: 'Rate', dataKey: 'rate' }
+                        ],
+                        body: [
+                            { 
+                                type: eventTypeText, 
+                                guests: guests,
+                                rate: `₦${baseRates[eventType.value].toLocaleString()} per guest`
+                            }
+                        ],
+                        headStyles: { 
+                            fillColor: [139, 0, 0],
+                            textColor: 255
+                        },
+                        styles: { 
+                            cellPadding: 5
+                        },
+                        theme: 'grid'
+                    });
 
-    const eventTypeText = eventType.options[eventType.selectedIndex].text;
-    const guests = guestValue.textContent;
-    
-    doc.autoTable({
-        startY: doc.lastAutoTable.finalY + 20,
-        columns: [
-            { header: 'Event Type', dataKey: 'type' },
-            { header: 'Guests', dataKey: 'guests' },
-            { header: 'Rate', dataKey: 'rate' }
-        ],
-        body: [
-            { 
-                type: eventTypeText, 
-                guests: guests,
-                rate: `₦${baseRates[eventType.value].toLocaleString()} per guest`
-            }
-        ],
-        headStyles: { 
-            fillColor: [139, 0, 0],
-            textColor: 255
-        },
-        styles: { 
-            cellPadding: 5
-        },
-        theme: 'grid'
-    });
+                    // Services Section
+                    if (selectedAddons.length > 0) {
+                        doc.setFontSize(12).setTextColor(90, 24, 154)
+                           .text('SELECTED SERVICES', 15, doc.lastAutoTable.finalY + 15);
+                        doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
 
-    // Services Section
-    if (selectedAddons.length > 0) {
-        doc.setFontSize(12).setTextColor(139, 0, 0)
-           .text('SELECTED SERVICES', 15, doc.lastAutoTable.finalY + 15);
-        doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
+                        const servicesData = selectedAddons.map(addon => {
+                            const card = document.querySelector(`.addon-card[data-addon="${addon}"]`);
+                            return {
+                                service: card.querySelector('h3').textContent,
+                                price: card.querySelector('p').textContent
+                            };
+                        });
 
-        const servicesData = selectedAddons.map(addon => {
-            const card = document.querySelector(`.addon-card[data-addon="${addon}"]`);
-            return {
-                service: card.querySelector('h3').textContent,
-                price: card.querySelector('p').textContent
-            };
-        });
+                        doc.autoTable({
+                            startY: doc.lastAutoTable.finalY + 20,
+                            columns: [
+                                { header: 'Service', dataKey: 'service' },
+                                { header: 'Price', dataKey: 'price' }
+                            ],
+                            body: servicesData,
+                            headStyles: { 
+                                fillColor: [139, 0, 0],
+                                textColor: 255
+                            },
+                            columnStyles: {
+                                price: { halign: 'right' }
+                            },
+                            styles: { 
+                                cellPadding: 5
+                            },
+                            theme: 'grid'
+                        });
+                    }
 
-        doc.autoTable({
-            startY: doc.lastAutoTable.finalY + 20,
-            columns: [
-                { header: 'Service', dataKey: 'service' },
-                { header: 'Price', dataKey: 'price' }
-            ],
-            body: servicesData,
-            headStyles: { 
-                fillColor: [139, 0, 0],
-                textColor: 255
-            },
-            columnStyles: {
-                price: { halign: 'right' }
-            },
-            styles: { 
-                cellPadding: 5
-            },
-            theme: 'grid'
-        });
-    }
+                    // Pricing Summary
+                    doc.setFontSize(12).setTextColor(90, 24, 154)
+                       .text('PRICING SUMMARY', 15, doc.lastAutoTable.finalY + 15);
+                    doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
 
-    // Pricing Summary
-    doc.setFontSize(12).setTextColor(139, 0, 0)
-       .text('PRICING SUMMARY', 15, doc.lastAutoTable.finalY + 15);
-    doc.line(15, doc.lastAutoTable.finalY + 17, 60, doc.lastAutoTable.finalY + 17);
+                    const summaryData = [
+                        { item: 'Base Price', amount: basePrice.textContent },
+                        { item: 'Add-Ons', amount: addonsPrice.textContent },
+                        { item: 'TOTAL', amount: totalPrice.textContent }
+                    ];
 
-    const summaryData = [
-        { item: 'Base Price', amount: basePrice.textContent },
-        { item: 'Add-Ons', amount: addonsPrice.textContent },
-        { item: 'TOTAL', amount: totalPrice.textContent }
-    ];
-
-    doc.autoTable({
-        startY: doc.lastAutoTable.finalY + 20,
-        columns: [
-            { header: 'Item', dataKey: 'item' },
-            { header: 'Amount', dataKey: 'amount' }
-        ],
-        body: summaryData,
-        headStyles: { 
-            fillColor: [139, 0, 0],
-            textColor: 255
-        },
-        columnStyles: {
-            amount: { halign: 'right' }
-        },
-        bodyStyles: {
-            fontSize: 12
-        },
-        styles: { 
-            cellPadding: 5
-        },
-        theme: 'grid',
-        didParseCell: function(data) {
-            if (data.row.index === 2) { // Total row
-                data.cell.styles.fontStyle = 'bold';
-                data.cell.styles.textColor = [139, 0, 0];
-                data.cell.styles.fontSize = 14;
-            }
-        }
-    });
-}
-
+                    doc.autoTable({
+                        startY: doc.lastAutoTable.finalY + 20,
+                        columns: [
+                            { header: 'Item', dataKey: 'item' },
+                            { header: 'Amount', dataKey: 'amount' }
+                        ],
+                        body: summaryData,
+                        headStyles: { 
+                            fillColor: [139, 0, 0],
+                            textColor: 255
+                        },
+                        columnStyles: {
+                            amount: { halign: 'right' }
+                        },
+                        bodyStyles: {
+                            fontSize: 12
+                        },
+                        styles: { 
+                            cellPadding: 5
+                        },
+                        theme: 'grid',
+                        didParseCell: function(data) {
+                            if (data.row.index === 2) { // Total row
+                                data.cell.styles.fontStyle = 'bold';
+                                data.cell.styles.textColor = [90, 24, 154];
+                                data.cell.styles.fontSize = 14;
+                            }
+                        }
+                    });
 
                     // Footer
                     doc.setFontSize(10).setTextColor(100)
