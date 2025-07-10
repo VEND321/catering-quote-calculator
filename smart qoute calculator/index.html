@@ -245,6 +245,8 @@
             }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -356,10 +358,10 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    // Initialize jsPDF
-    const { jsPDF } = window.jspdf;
-    
+   // Initialize jsPDF (make sure to include the CDN in your HTML)
+const { jsPDF } = window.jspdf;
+
+document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const guestSlider = document.getElementById('guests');
     const guestValue = document.getElementById('guest-value');
@@ -368,9 +370,9 @@
     const totalPrice = document.getElementById('total-price');
     const basePrice = document.getElementById('base-price');
     const addonsPrice = document.getElementById('addons-price');
-    const pdfExportBtn = document.getElementById('export-pdf');
+    const pdfExportBtn = document.querySelector('.pdf-export');
 
-    // Pricing Data - FULL VERSION
+    // Pricing Data
     const baseRates = {
         wedding: 7500,
         corporate: 8000,
@@ -415,7 +417,7 @@
         });
     });
 
-    // Calculate Price - FULL VERSION WITH VOLUME DISCOUNTS
+    // Calculate Price with Volume Discounts
     function calculatePrice() {
         const guests = parseInt(guestSlider.value);
         const event = eventType.value;
@@ -479,11 +481,11 @@
         doc.line(35, 56, 80, 56);
         
         // Get calculator values
-        const eventTypeText = document.getElementById('event-type').options[document.getElementById('event-type').selectedIndex].text;
-        const guests = document.getElementById('guest-value').textContent;
-        const total = document.getElementById('total-price').textContent;
-        const base = document.getElementById('base-price').textContent;
-        const addons = document.getElementById('addons-price').textContent;
+        const eventTypeText = eventType.options[eventType.selectedIndex].text;
+        const guests = guestValue.textContent;
+        const total = totalPrice.textContent;
+        const base = basePrice.textContent;
+        const addons = addonsPrice.textContent;
         
         // Create table data
         const eventData = [
